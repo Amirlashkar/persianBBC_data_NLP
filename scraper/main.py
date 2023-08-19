@@ -42,10 +42,7 @@ for topic in topics:
         topic = item.text.strip()
         item.click()
         wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
-        if topic != "افغانستان":
-            news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li//a")
-        else:
-            news_list = driver.find_elements(By.XPATH, "//ul[@role='list']//li[@dir='rtl']/div/div/h3/a")
+        news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li//a")
         for news in news_list:
             wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
             driver.execute_script("arguments[0].scrollIntoView();", news)
