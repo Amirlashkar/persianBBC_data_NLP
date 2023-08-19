@@ -27,25 +27,28 @@ def check_exists(by:str, target:str):
         return False
     return True
 
-def wait_till_located(by:str, target:str, timestamp:int=1):
+def wait_till_located(by:str, target:str, timestamp:int):
     while check_exists(by, target) == False:
         print("Loading page...")
         time.sleep(timestamp)
 
 
-items = driver.find_elements(By.XPATH, "//li[@role='listitem' and ./a[contains(text(), '')]]")
 topics = ["ايران", "جهان", "افغانستان", "هنر", "ورزش", "اقتصاد", "دانش"]
 
-for item in items:
+for topic in topics:
+    wait_till_located("XPATH", "//a[@aria-labelledby='NavigationLinks-صفحه اول']", 1)
+    item = driver.find_element(By.XPATH, f"//a[contains(text(), '{topic}')]")
     if item.text.strip() in topics:
+        topic = item.text.strip()
         item.click()
-        wait_till_located("XPATH", "//ul[@role='list']")
-        news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li")
+        wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
+        news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li//a")
         for news in news_list:
-            act = ActionChains(driver)
-            act.move_to_element(news)
-            act.click(news)
-            time.sleep(3)
+            wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
+            driver.execute_script("arguments[0].scrollIntoView();", news)
+            news.click()
+            wait_till_located("XPATH", "//p[@dir='rtl']", 1)
             driver.back()
+
         driver.back()
         
