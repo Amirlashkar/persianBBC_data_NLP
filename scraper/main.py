@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from data_saver import fill_table
 import time
 
 driver = webdriver.Chrome("/Users/albk/Documents/ChromeDriver/chromedriver_mac_arm64/chromedriver")
@@ -34,6 +35,7 @@ def wait_till_located(by:str, target:str, timestamp:int):
 
 
 topics = ["ايران", "جهان", "هنر", "ورزش", "اقتصاد", "دانش"]
+pages2explore = 2
 
 for topic in topics:
     wait_till_located("XPATH", "//a[@aria-labelledby='NavigationLinks-صفحه اول']", 1)
@@ -42,13 +44,22 @@ for topic in topics:
         topic = item.text.strip()
         item.click()
         wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
-        news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li//a")
-        for news in news_list:
-            wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
-            driver.execute_script("arguments[0].scrollIntoView();", news)
-            news.click()
-            wait_till_located("XPATH", "//p[@dir='rtl']", 1)
-            driver.back()
+        for page in range(pages2explore):
+            news_list = driver.find_elements(By.XPATH, "//ul[@role='list' and @data-testid='topic-promos']/li//a")
+            for news in news_list:
+                wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
+                driver.execute_script("arguments[0].scrollIntoView();", news)
+                news.click()
+                wait_till_located("XPATH", "//p[@dir='rtl']", 1)
+                paragraphs = driver.find_elements(By.XPATH, "//p[@dir='rtl' and not(contains(text(), 'پادکست'))]")
+                for paragraph in paragraphs:
+                    driver.execute_script("arguments[0].scrollIntoView();", paragraph)
+                    fill_table(paragraph.text, topic)
+                    
+                driver.back()
+            
+            next_page_element = driver.find_element(By.XPATH, "//span[contains(@id, 'next-page')]/..")
+            next_page_element.click()
 
         driver.back()
         
