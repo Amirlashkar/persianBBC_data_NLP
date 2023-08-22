@@ -38,7 +38,6 @@ topics = ["ايران", "جهان", "هنر", "ورزش", "اقتصاد", "دا�
 pages2explore = 2
 
 for topic in topics:
-    wait_till_located("XPATH", "//a[@aria-labelledby='NavigationLinks-صفحه اول']", 1)
     item = driver.find_element(By.XPATH, f"//a[contains(text(), '{topic}')]")
     if item.text.strip() in topics:
         topic = item.text.strip()
