@@ -50,10 +50,15 @@ for topic in topics:
                 driver.execute_script("arguments[0].scrollIntoView();", news)
                 news.click()
                 wait_till_located("XPATH", "//p[@dir='rtl']", 1)
+                related_topics = driver.find_elements(By.XPATH, "//aside[@aria-labelledby='related-topics']//a")
+                related_topics_ = " ".join([element.text + " | " for element in related_topics])
                 paragraphs = driver.find_elements(By.XPATH, "//p[@dir='rtl' and not(contains(text(), 'پادکست'))]")
+                doc = " ".join([paragraph.text + "\n" for paragraph in paragraphs])
+                title = driver.find_element(By.XPATH, "//h1[@id='content']")
+                fill_table("doc", topic, title.text, related_topics_, doc)
                 for paragraph in paragraphs:
                     driver.execute_script("arguments[0].scrollIntoView();", paragraph)
-                    fill_table(paragraph.text, topic)
+                    fill_table("paragraph", topic, title.text, related_topics_, paragraph.text)
                     
                 driver.back()
             
