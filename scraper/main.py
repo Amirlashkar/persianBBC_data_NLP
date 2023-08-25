@@ -33,9 +33,11 @@ def wait_till_located(by:str, target:str, timestamp:int):
         print("Loading page...")
         time.sleep(timestamp)
 
-
-topics = ["ايران", "جهان", "هنر", "ورزش", "اقتصاد", "دانش"]
-pages2explore = 2
+# # for all categories
+# topics = ["ايران", "جهان", "هنر", "ورزش", "اقتصاد", "دانش"]
+# for the rest of categories
+topics = ["اقتصاد", "دانش"]
+pages2explore = 10
 
 for topic in topics:
     item = driver.find_element(By.XPATH, f"//a[contains(text(), '{topic}')]")
@@ -48,6 +50,9 @@ for topic in topics:
             for news in news_list:
                 wait_till_located("XPATH", f"//a[@aria-labelledby='NavigationLinks-{topic}']", 1)
                 driver.execute_script("arguments[0].scrollIntoView();", news)
+                if "سپیده قلیان فردا در دادگاه شرکت می‌کند" in news.text:
+                    continue
+                print(news.text)
                 news.click()
                 wait_till_located("XPATH", "//p[@dir='rtl']", 1)
                 related_topics = driver.find_elements(By.XPATH, "//aside[@aria-labelledby='related-topics']//a")
@@ -64,6 +69,7 @@ for topic in topics:
             
             next_page_element = driver.find_element(By.XPATH, "//span[contains(@id, 'next-page')]/..")
             next_page_element.click()
+            wait_till_located("XPATH", f"//a[@aria-current='page' and contains(text(), '{page + 2}')]", 1)
 
         driver.back()
         

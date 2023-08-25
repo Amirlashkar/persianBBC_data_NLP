@@ -3,9 +3,9 @@ import os
 
 def fill_table(docORparagraph:str, main_topic:str, title:str, related_topics:str, data:str):
     if docORparagraph == "paragraph":
-        data_path = os.path.join(os.getcwd(), "data", "paragraph_data.csv")
+        data_path = os.path.join(os.getcwd(), "data", "rest_paragraph_data.csv")
     else:
-        data_path = os.path.join(os.getcwd(), "data", "doc_data.csv")
+        data_path = os.path.join(os.getcwd(), "data", "rest_doc_data.csv")
 
     if not os.path.exists(data_path):
         df = pd.DataFrame(columns=["main_topic", "title", "related_topics" ,"data"])
